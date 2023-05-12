@@ -35,10 +35,13 @@ p {
   margin-bottom: 10px;
 }
 
-.country__name {
-  /* display: flex; */
+.country__name,
+.country {
+  display: flex;
+  align-items: center;
 }
 
 .country__flag {
-  /* margin-right: 10px; */
+  /* display: inline-block; */
+  margin-right: 10px;
 }

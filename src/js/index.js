@@ -1,16 +1,24 @@
 import debounce from 'lodash.debounce';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
+import { refs } from './refs.js';
 import { fetchCountries } from './fetchCountries';
+import { createCardMarkup } from './createCardMarkup.js';
+import { createListMarkup } from './createListMarkup.js';
+import { clearContent } from './clearContent.js';
 import '../css/styles.css';
 
-const inputEl = document.querySelector('#search-box');
-const listEl = document.querySelector('.country-list');
-const infoEl = document.querySelector('.country-info');
+const { inputEl, listEl, infoEl } = refs;
 
 const DEBOUNCE_DELAY = 300;
 const INFO_TEXT = 'Too many matches found. Please enter a more specific name.';
 const ERROR_TEXT = 'Oops, there is no country with that name';
+
+const options = {
+  fontSize: '14px',
+  cssAnimationDuration: 500,
+  cssAnimationStyle: 'zoom',
+};
 
 inputEl.addEventListener('input', debounce(onInputChange, DEBOUNCE_DELAY));
 listEl.addEventListener('click', onLink);
@@ -23,7 +31,7 @@ function onInputChange({ target: { value } }) {
 
   fetchCountries(value.trim())
     .then(handleData)
-    .catch(_err => Notify.failure(ERROR_TEXT));
+    .catch(_err => Notify.failure(ERROR_TEXT, options));
 }
 
 function handleData(data) {
@@ -36,22 +44,18 @@ function handleData(data) {
 
   if (data.length > 10) {
     clearContent(listEl, infoEl);
-    return Notify.info(INFO_TEXT);
+    return Notify.info(INFO_TEXT, options);
   }
 
   if (data.length <= 10 && data.length > 1) {
     clearContent(infoEl);
-    createList(data);
+    return createList(data);
   }
 
   if (data.length === 1) {
     clearContent(listEl);
     return createCard(data[0]);
   }
-}
-
-function clearContent(...params) {
-  params.forEach(elem => (elem.innerHTML = ''));
 }
 
 function createList(countries) {
@@ -62,39 +66,6 @@ function createList(countries) {
 function createCard(country) {
   const cardMarkup = createCardMarkup(country);
   infoEl.innerHTML = cardMarkup;
-}
-
-function createCardMarkup(country) {
-  const { capital, population, name, languages, flags } = country;
-  const languageList = Object.values(languages).join(', ');
-  return `<h2 class="country__name">
-            <img
-              class="country__flag"
-              width='35'
-              src=${flags.svg}
-              alt=${flags.alt}
-            >
-            ${name.official}
-          </h2>
-          <p>Capital: ${capital}</p>
-          <p>Population: ${population}</p>
-          <p>Languages: ${languageList}</p>`;
-}
-
-function createListMarkup(countries) {
-  return countries
-    .map(({ flags, name }) => {
-      return `<li class="country">
-                <img
-                  class="country__flag"
-                  width='35'
-                  src=${flags.svg}
-                  alt=${flags.alt}
-                >
-                <a href='${flags.svg}'>${name.official}</a>
-              </li>`;
-    })
-    .join('');
 }
 
 function onLink(e) {

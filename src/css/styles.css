@@ -18,3 +18,14 @@ body {
   max-width: 320px;
   margin-bottom: 16px;
 }
+
+.country__name {
+  /* display: flex; */
+  /* object-fit: contain; */
+}
+
+.country__flag {
+  /* display: inline-block; */
+  /* margin-right: 10px; */
+  /* object-fit: contain; */
+}

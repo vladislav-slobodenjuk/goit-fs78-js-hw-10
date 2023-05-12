@@ -19,13 +19,26 @@ body {
   margin-bottom: 16px;
 }
 
+p {
+  margin-top: 0;
+}
+
+.country-list {
+  padding-left: 10;
+}
+
+.country {
+  list-style: none;
+}
+
+.country:not(:last-child) {
+  margin-bottom: 10px;
+}
+
 .country__name {
   /* display: flex; */
-  /* object-fit: contain; */
 }
 
 .country__flag {
-  /* display: inline-block; */
   /* margin-right: 10px; */
-  /* object-fit: contain; */
 }
